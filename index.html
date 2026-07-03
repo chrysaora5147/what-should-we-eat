@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>กินไรดีนะ</title>
+    <style>
+      :root {
+        --ink: #171312;
+        --muted: #6d625d;
+        --paper: #fffaf3;
+        --panel: #ffffff;
+        --line: #e8ded5;
+        --tomato: #e94f37;
+        --leaf: #2f8f6b;
+        --plum: #744fc6;
+        --gold: #f1b942;
+        --sky: #57a8d8;
+        --shadow: 0 18px 48px rgba(46, 31, 22, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 14% 18%, rgba(233, 79, 55, 0.15), transparent 28%),
+          radial-gradient(circle at 88% 12%, rgba(87, 168, 216, 0.18), transparent 30%),
+          linear-gradient(145deg, #fff8ef 0%, #f8fbf7 52%, #fff5f2 100%);
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .app {
+        width: min(1120px, 100%);
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 18px;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 16px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--gold);
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .screen {
+        display: none;
+        min-height: 0;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .hero {
+        min-height: calc(100vh - 96px);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 430px);
+        align-items: center;
+        gap: 28px;
+      }
+
+      .hero-copy {
+        max-width: 620px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 720px;
+        font-size: clamp(52px, 6.4vw, 88px);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        font-size: clamp(30px, 4vw, 54px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: clamp(18px, 2.2vw, 24px);
+        line-height: 1.35;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 26px;
+      }
+
+      .btn {
+        min-height: 46px;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        padding: 10px 14px;
+        background: var(--panel);
+        color: var(--ink);
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 3px 3px 0 var(--ink);
+        transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+      }
+
+      .btn:hover,
+      .btn:focus-visible {
+        transform: translate(-1px, -1px);
+        box-shadow: 5px 5px 0 var(--ink);
+        outline: none;
+      }
+
+      .btn.primary {
+        background: var(--tomato);
+        color: #fff;
+      }
+
+      .btn.good {
+        background: var(--leaf);
+        color: #fff;
+      }
+
+      .btn.soft {
+        background: #fff;
+        box-shadow: none;
+      }
+
+      .food-stack {
+        position: relative;
+        min-height: 520px;
+        display: grid;
+        place-items: center;
+      }
+
+      .sample-card {
+        width: min(100%, 360px);
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 12px 12px 0 var(--ink);
+        overflow: hidden;
+        transform: rotate(3deg);
+      }
+
+      .sample-card:nth-child(2) {
+        position: absolute;
+        transform: rotate(-8deg) translate(-44px, 24px);
+        z-index: -1;
+        opacity: 0.82;
+      }
+
+      .food-art {
+        min-height: 230px;
+        aspect-ratio: 1 / 1;
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+        background-color: #fff3df;
+      }
+
+      .food-art::before {
+        content: "";
+        position: absolute;
+        width: 210px;
+        height: 210px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.48);
+        border: 2px dashed rgba(23, 19, 18, 0.24);
+      }
+
+      .food-art.has-image::before {
+        display: none;
+      }
+
+      .food-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 6px;
+      }
+
+      .food-emoji {
+        position: relative;
+        z-index: 1;
+        font-size: 112px;
+        filter: drop-shadow(0 12px 18px rgba(23, 19, 18, 0.22));
+      }
+
+      .card-body {
+        padding: 16px;
+      }
+
+      .card-title {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .card-title h3 {
+        font-size: 26px;
+        line-height: 1.12;
+      }
+
+      .price {
+        flex: 0 0 auto;
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: var(--gold);
+        font-weight: 900;
+      }
+
+      .desc {
+        margin-top: 8px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+
+      .tag {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 9px;
+        color: #392f2b;
+        background: #fff7ed;
+        font-size: 13px;
+        font-weight: 750;
+      }
+
+      .mode-grid,
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .mode-card,
+      .mini-card {
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        padding: 14px;
+        text-align: left;
+        min-height: 142px;
+        box-shadow: 4px 4px 0 var(--ink);
+      }
+
+      .mode-card.active {
+        background: #ecfff6;
+        border-color: var(--leaf);
+      }
+
+      .mode-icon {
+        font-size: 42px;
+        line-height: 1;
+      }
+
+      .mode-card strong,
+      .mini-card strong {
+        display: block;
+        margin-top: 10px;
+        font-size: 18px;
+      }
+
+      .mode-card span,
+      .mini-card span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .swipe-zone {
+        min-height: calc(100vh - 112px);
+        display: grid;
+        place-items: center;
+      }
+
+      .swipe-card {
+        width: min(100%, 430px);
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: var(--shadow), 8px 8px 0 var(--ink);
+        overflow: hidden;
+        touch-action: pan-y;
+        user-select: none;
+      }
+
+      .swipe-card.dragging {
+        transition: none;
+      }
+
+      .card-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 0 16px 16px;
+      }
+
+      .side-panel {
+        position: sticky;
+        top: 18px;
+        border-left: 2px solid var(--line);
+        padding-left: 18px;
+      }
+
+      .counter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-weight: 900;
+        margin-bottom: 12px;
+      }
+
+      .meter {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        width: 120px;
+      }
+
+      .pip {
+        height: 10px;
+        border-radius: 999px;
+        background: #e7ddd4;
+      }
+
+      .pip.on {
+        background: var(--leaf);
+      }
+
+      .picked-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .picked-item {
+        min-height: 58px;
+        display: grid;
+        grid-template-columns: 46px 1fr;
+        align-items: center;
+        gap: 9px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.72);
+        padding: 7px;
+      }
+
+      .thumb {
+        width: 46px;
+        height: 46px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+        overflow: hidden;
+      }
+
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 2px;
+      }
+
+      .picked-item strong {
+        display: block;
+        line-height: 1.15;
+      }
+
+      .picked-item small {
+        color: var(--muted);
+      }
+
+      .empty {
+        border: 1px dashed #cdbfb6;
+        border-radius: 8px;
+        padding: 14px;
+        color: var(--muted);
+      }
+
+      .final-layout,
+      .result-layout,
+      .library-layout {
+        min-height: calc(100vh - 96px);
+        display: grid;
+        align-content: center;
+        gap: 18px;
+      }
+
+      .final-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .final-card {
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        background: var(--panel);
+        overflow: hidden;
+        box-shadow: 5px 5px 0 var(--ink);
+      }
+
+      .final-card .food-art {
+        min-height: 180px;
+      }
+
+      .final-card .food-emoji {
+        font-size: 86px;
+      }
+
+      .result-card {
+        display: grid;
+        grid-template-columns: minmax(260px, 420px) 1fr;
+        gap: 20px;
+        align-items: stretch;
+        border: 2px solid var(--ink);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--panel);
+        box-shadow: 8px 8px 0 var(--ink);
+      }
+
+      .result-card .food-art {
+        min-height: 420px;
+      }
+
+      .result-copy {
+        padding: 22px;
+        display: grid;
+        align-content: center;
+        gap: 14px;
+      }
+
+      .result-copy h2 {
+        font-size: clamp(36px, 5vw, 66px);
+      }
+
+      .drawer-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .screen-title {
+        max-width: 760px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .shake {
+        animation: shake 360ms ease;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        50% { transform: translateX(8px); }
+        75% { transform: translateX(-4px); }
+      }
+
+      @media (max-width: 860px) {
+        h1 {
+          font-size: clamp(44px, 12vw, 72px);
+        }
+
+        h2 {
+          font-size: clamp(30px, 9vw, 48px);
+        }
+
+        .hero,
+        .workspace,
+        .result-card {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+          align-content: start;
+          padding-top: 18px;
+          gap: 18px;
+        }
+
+        .food-stack {
+          min-height: 410px;
+        }
+
+        .swipe-zone {
+          min-height: auto;
+          place-items: start center;
+        }
+
+        .swipe-card {
+          width: min(100%, 480px);
+        }
+
+        .final-layout,
+        .result-layout,
+        .library-layout {
+          min-height: auto;
+          align-content: start;
+          padding-bottom: 18px;
+        }
+
+        .result-card {
+          gap: 0;
+        }
+
+        .mode-grid,
+        .menu-grid,
+        .final-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .side-panel {
+          position: static;
+          border-left: 0;
+          border-top: 2px solid var(--line);
+          padding: 14px 0 0;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .app {
+          padding: 12px;
+          gap: 12px;
+        }
+
+        .topbar {
+          align-items: center;
+          gap: 8px;
+        }
+
+        .brand span:last-child {
+          display: none;
+        }
+
+        .brand-mark {
+          width: 38px;
+          height: 38px;
+          box-shadow: 3px 3px 0 var(--ink);
+        }
+
+        .nav-actions .btn {
+          min-height: 40px;
+          padding: 8px 10px;
+        }
+
+        .hero-copy {
+          display: grid;
+          gap: 14px;
+        }
+
+        .lead {
+          margin-top: 0;
+          font-size: 17px;
+        }
+
+        .button-row {
+          display: grid;
+          grid-template-columns: 1fr;
+          margin-top: 0;
+        }
+
+        .btn {
+          min-height: 48px;
+          width: 100%;
+        }
+
+        .food-stack {
+          min-height: 300px;
+          align-items: start;
+        }
+
+        .sample-card {
+          width: min(92vw, 300px);
+          box-shadow: 7px 7px 0 var(--ink);
+        }
+
+        .sample-card .food-art {
+          min-height: 160px;
+        }
+
+        .card-body {
+          padding: 13px;
+        }
+
+        .card-title {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .card-title h3 {
+          font-size: 23px;
+        }
+
+        .price {
+          padding: 5px 9px;
+        }
+
+        .mode-grid,
+        .menu-grid,
+        .final-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .card-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .card-actions {
+          display: grid;
+          padding: 0 13px 13px;
+        }
+
+        .swipe-card {
+          box-shadow: var(--shadow), 5px 5px 0 var(--ink);
+        }
+
+        .swipe-card .food-art {
+          min-height: 0;
+          aspect-ratio: 1 / 1;
+        }
+
+        .side-panel .button-row {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .drawer-title {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .result-card {
+          box-shadow: 5px 5px 0 var(--ink);
+        }
+
+        .result-card .food-art {
+          min-height: 0;
+          aspect-ratio: 1 / 1;
+        }
+
+        .result-copy {
+          padding: 16px 14px;
+          gap: 12px;
+        }
+
+        .result-copy h2 {
+          font-size: clamp(34px, 12vw, 48px);
+        }
+
+        .sample-card:nth-child(2) {
+          transform: rotate(-7deg) translate(-18px, 18px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <button class="brand btn soft" data-go="home" aria-label="กลับหน้าแรก">
+          <span class="brand-mark">🍱</span>
+          <span>กินไรดีนะ</span>
+        </button>
+        <nav class="nav-actions" aria-label="เมนู">
+          <button class="btn soft" data-go="favorites">♡ โปรด</button>
+          <button class="btn soft" data-go="history">↺ ผู้ชนะ</button>
+        </nav>
+      </header>
+
+      <section class="screen active" id="home">
+        <div class="hero">
+          <div class="hero-copy">
+            <h1>วันนี้กินอะไรดี?</h1>
+            <p class="lead">ปัดหาเมนูที่ใช่ เก็บผู้เข้ารอบ 3 จาน แล้วให้กระเพาะตัดสินรอบสุดท้าย</p>
+            <div class="button-row">
+              <button class="btn primary" data-start>▶ เริ่มปัดเลย</button>
+              <button class="btn" data-go="modes">⚙ เลือกหมวด</button>
+            </div>
+          </div>
+          <div class="food-stack" aria-hidden="true">
+            <article class="sample-card">
+              <div class="food-art" style="background: linear-gradient(135deg,#ffd166,#ef476f);">
+                <span class="food-emoji">🍳</span>
+              </div>
+              <div class="card-body">
+                <div class="card-title">
+                  <h3>ข้าวกะเพราไข่ดาว</h3>
+                  <span class="price">50-80</span>
+                </div>
+                <p class="desc">ตัวเต็งสายสิ้นคิด แต่ไม่เคยทรยศใคร</p>
+                <div class="tags">
+                  <span class="tag">เผ็ด</span><span class="tag">อิ่ม</span><span class="tag">คลาสสิก</span>
+                </div>
+              </div>
+            </article>
+            <article class="sample-card">
+              <div class="food-art" style="background: linear-gradient(135deg,#6ecb63,#4d96ff);">
+                <span class="food-emoji">🍜</span>
+              </div>
+              <div class="card-body">
+                <div class="card-title">
+                  <h3>ราเมน</h3>
+                  <span class="price">120-220</span>
+                </div>
+                <p class="desc">ซุปอุ่น ๆ สำหรับวันที่ใจอยากนุ่ม</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="modes">
+        <div class="final-layout">
+          <div class="screen-title">
+            <h2>เลือกหมวดมื้อนี้</h2>
+            <p class="lead">เอาแค่หมวดใหญ่ ๆ ก่อน จะได้เริ่มไว เล่นสนุก และไม่ต้องคิดเยอะ</p>
+          </div>
+          <div class="mode-grid" id="modeGrid"></div>
+          <div class="button-row">
+            <button class="btn primary" data-start>▶ เริ่มรอบนี้</button>
+            <button class="btn" data-go="home">← กลับ</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="swipe">
+        <div class="workspace">
+          <div class="swipe-zone">
+            <article class="swipe-card" id="swipeCard" aria-live="polite"></article>
+          </div>
+          <aside class="side-panel">
+            <div class="counter">
+              <span id="modeLabel">สุ่มทั้งหมด</span>
+              <span id="countLabel">0/3</span>
+            </div>
+            <div class="meter" aria-hidden="true">
+              <span class="pip"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+            </div>
+            <div class="picked-list" id="pickedList"></div>
+            <div class="button-row">
+              <button class="btn soft" data-go="modes">⚙ หมวด</button>
+              <button class="btn soft" data-reset>↺ เริ่มใหม่</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="screen" id="final">
+        <div class="final-layout">
+          <div class="screen-title">
+            <h2>ผู้เข้ารอบทั้ง 3 มาถึงแล้ว</h2>
+            <p class="lead">กระเพาะจงตัดสิน</p>
+          </div>
+          <div class="final-grid" id="finalGrid"></div>
+          <div class="button-row">
+            <button class="btn primary" id="randomWinner">🎲 สุ่มผู้ชนะให้เลย</button>
+            <button class="btn" data-reset>↺ เริ่มใหม่</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="result">
+        <div class="result-layout">
+          <article class="result-card" id="resultCard"></article>
+        </div>
+      </section>
+
+      <section class="screen" id="favorites">
+        <div class="library-layout">
+          <div class="drawer-title">
+            <div>
+              <h2>เมนูที่เคยชอบ</h2>
+              <p class="lead">เก็บไว้เวลาสมองหิวแต่สมองไม่ว่าง</p>
+            </div>
+            <button class="btn" data-go="home">← กลับ</button>
+          </div>
+          <div class="menu-grid" id="favoriteGrid"></div>
+        </div>
+      </section>
+
+      <section class="screen" id="history">
+        <div class="library-layout">
+          <div class="drawer-title">
+            <div>
+              <h2>ประวัติผู้ชนะ</h2>
+              <p class="lead">ทำเนียบจานที่เคยช่วยชีวิต</p>
+            </div>
+            <button class="btn" data-go="home">← กลับ</button>
+          </div>
+          <div class="menu-grid" id="historyGrid"></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="menus.js"></script>
+    <script>
+      const modes = [
+        { id: "all", icon: "🎲", name: "สุ่มทั้งหมด", note: "ให้โชคชะตาและน้ำย่อยทำงานร่วมกัน" },
+        { id: "food", icon: "🍛", name: "อาหาร", note: "ข้าว เส้น ของทอด เมนูย่อย ๆ รวมไว้ตรงนี้เลย" },
+        { id: "dessert", icon: "🍧", name: "ของหวาน", note: "วันไหนใจอยากได้อะไรนุ่ม ๆ หวาน ๆ" },
+        { id: "drink", icon: "🧋", name: "เครื่องดื่ม", note: "แก้วเดียวก็เปลี่ยนอารมณ์มื้อได้" }
+      ];
+
+      const categoryGradients = {
+        food: ["#ffd166,#ef476f", "#4d96ff,#6bcb77", "#f77f00,#d62828", "#52b788,#ffd166", "#8d5524,#c68642"],
+        dessert: ["#caf0f8,#ffafcc", "#f4d35e,#ee964b", "#ffd60a,#52b788", "#f6bd60,#84a59d", "#cdb4db,#ffc8dd"],
+        drink: ["#fb8500,#8ecae6", "#6f4e37,#f4d35e", "#84a98c,#fefae0", "#7f4f24,#ffcad4", "#f9dc5c,#00b4d8"]
+      };
+
+      function gradientFor(menu, index) {
+        const palette = categoryGradients[menu.category] || categoryGradients.food;
+        return menu.gradient || palette[index % palette.length];
+      }
+
+      const menus = (window.MENU_ITEMS || []).map((menu, index) => ({
+        ...menu,
+        gradient: gradientFor(menu, index)
+      }));
+
+      const state = {
+        mode: "all",
+        deck: [],
+        index: 0,
+        selected: [],
+        winner: null,
+        favorites: JSON.parse(localStorage.getItem("kinrai:favorites") || "[]"),
+        history: JSON.parse(localStorage.getItem("kinrai:history") || "[]")
+      };
+
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+      function shuffle(items) {
+        return [...items].sort(() => Math.random() - 0.5);
+      }
+
+      function visibleMenus() {
+        return state.mode === "all" ? menus : menus.filter((menu) => menu.category === state.mode);
+      }
+
+      function show(screenId) {
+        $$(".screen").forEach((screen) => screen.classList.toggle("active", screen.id === screenId));
+        if (screenId === "modes") renderModes();
+        if (screenId === "favorites") renderLibrary("favoriteGrid", state.favorites, "ยังไม่มีเมนูโปรด");
+        if (screenId === "history") renderLibrary("historyGrid", state.history, "ยังไม่มีผู้ชนะ");
+      }
+
+      function startRound() {
+        state.deck = shuffle(visibleMenus());
+        state.index = 0;
+        state.selected = [];
+        state.winner = null;
+        show("swipe");
+        renderSwipe();
+      }
+
+      function renderModes() {
+        $("#modeGrid").innerHTML = modes.map((mode) => `
+          <button class="mode-card ${state.mode === mode.id ? "active" : ""}" data-mode="${mode.id}">
+            <span class="mode-icon">${mode.icon}</span>
+            <strong>${mode.name}</strong>
+            <span>${mode.note}</span>
+          </button>
+        `).join("");
+      }
+
+      function menuMedia(menu) {
+        if (menu.image) {
+          return `
+            <div class="food-art has-image" style="background: linear-gradient(135deg,${menu.gradient});">
+              <img class="food-image" src="${menu.image}" alt="${menu.name}" loading="lazy">
+            </div>
+          `;
+        }
+
+        return `
+          <div class="food-art" style="background: linear-gradient(135deg,${menu.gradient});">
+            <span class="food-emoji">${menu.emoji}</span>
+          </div>
+        `;
+      }
+
+      function thumbMedia(menu) {
+        if (menu.image) {
+          return `<span class="thumb" style="background: linear-gradient(135deg,${menu.gradient});"><img src="${menu.image}" alt="" loading="lazy"></span>`;
+        }
+
+        return `<span class="thumb" style="background: linear-gradient(135deg,${menu.gradient});">${menu.emoji}</span>`;
+      }
+
+      function menuCard(menu) {
+        return `
+          ${menuMedia(menu)}
+          <div class="card-body">
+            <div class="card-title">
+              <h3>${menu.name}</h3>
+              <span class="price">${menu.priceRange}</span>
+            </div>
+            <p class="desc">${menu.description}</p>
+            <div class="tags">${menu.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
+          </div>
+        `;
+      }
+
+      function renderSwipe() {
+        const card = $("#swipeCard");
+        const mode = modes.find((item) => item.id === state.mode);
+        $("#modeLabel").textContent = mode.name;
+        $("#countLabel").textContent = `${state.selected.length}/3`;
+        $$(".pip").forEach((pip, index) => pip.classList.toggle("on", index < state.selected.length));
+        renderPicked();
+
+        if (state.selected.length >= 3) {
+          renderFinal();
+          show("final");
+          return;
+        }
+
+        if (state.index >= state.deck.length) {
+          const missing = 3 - state.selected.length;
+          const extras = shuffle(menus.filter((menu) => !state.selected.some((picked) => picked.id === menu.id))).slice(0, missing);
+          state.selected.push(...extras);
+          renderFinal();
+          show("final");
+          return;
+        }
+
+        const menu = state.deck[state.index];
+        card.style.transform = "";
+        card.classList.remove("dragging");
+        card.innerHTML = `
+          ${menuCard(menu)}
+          <div class="card-actions">
+            <button class="btn" data-skip>← ไม่ใช่วันนี้</button>
+            <button class="btn good" data-like>เข้ารอบ! →</button>
+          </div>
+        `;
+        bindSwipe(card);
+      }
+
+      function renderPicked() {
+        const list = $("#pickedList");
+        if (!state.selected.length) {
+          list.innerHTML = `<div class="empty">รอผู้เข้ารอบจานแรกอยู่</div>`;
+          return;
+        }
+
+        list.innerHTML = state.selected.map((menu) => `
+          <div class="picked-item">
+            ${thumbMedia(menu)}
+            <span><strong>${menu.name}</strong><small>${menu.priceRange} บาท</small></span>
+          </div>
+        `).join("");
+      }
+
+      function skipMenu() {
+        state.index += 1;
+        renderSwipe();
+      }
+
+      function likeMenu() {
+        const menu = state.deck[state.index];
+        if (menu && !state.selected.some((picked) => picked.id === menu.id)) {
+          state.selected.push(menu);
+        }
+        state.index += 1;
+        renderSwipe();
+      }
+
+      function renderFinal() {
+        $("#finalGrid").innerHTML = state.selected.map((menu) => `
+          <article class="final-card">
+            ${menuCard(menu)}
+            <div class="card-actions">
+              <button class="btn good" data-winner="${menu.id}">เลือกอันนี้</button>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      function chooseWinner(menu) {
+        state.winner = menu;
+        state.history = [menu, ...state.history.filter((item) => item.id !== menu.id)].slice(0, 12);
+        localStorage.setItem("kinrai:history", JSON.stringify(state.history));
+        renderResult();
+        show("result");
+      }
+
+      function renderResult() {
+        const menu = state.winner;
+        const isFavorite = state.favorites.some((item) => item.id === menu.id);
+        $("#resultCard").innerHTML = `
+          ${menuMedia(menu)}
+          <div class="result-copy">
+            <p class="muted">วันนี้กิน</p>
+            <h2>${menu.name}</h2>
+            <p class="lead">${menu.reason}</p>
+            <div class="tags">${menu.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
+            <div class="button-row">
+              <button class="btn primary" data-reset>↺ เริ่มใหม่</button>
+              <button class="btn" data-favorite="${menu.id}">${isFavorite ? "♥ บันทึกแล้ว" : "♡ บันทึกเป็นเมนูโปรด"}</button>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderLibrary(targetId, items, emptyText) {
+        const target = $(`#${targetId}`);
+        if (!items.length) {
+          target.innerHTML = `<div class="empty">${emptyText}</div>`;
+          return;
+        }
+
+        target.innerHTML = items.map((menu) => `
+          <article class="mini-card">
+            ${thumbMedia(menu)}
+            <strong>${menu.name}</strong>
+            <span>${menu.description}</span>
+          </article>
+        `).join("");
+      }
+
+      function toggleFavorite(menuId) {
+        const menu = menus.find((item) => item.id === menuId);
+        const exists = state.favorites.some((item) => item.id === menuId);
+        state.favorites = exists
+          ? state.favorites.filter((item) => item.id !== menuId)
+          : [menu, ...state.favorites].slice(0, 24);
+        localStorage.setItem("kinrai:favorites", JSON.stringify(state.favorites));
+        if (state.winner) renderResult();
+      }
+
+      function bindSwipe(card) {
+        let startX = 0;
+        let currentX = 0;
+        let active = false;
+
+        card.onpointerdown = (event) => {
+          active = true;
+          startX = event.clientX;
+          card.classList.add("dragging");
+          card.setPointerCapture(event.pointerId);
+        };
+
+        card.onpointermove = (event) => {
+          if (!active) return;
+          currentX = event.clientX - startX;
+          const rotate = Math.max(-14, Math.min(14, currentX / 12));
+          card.style.transform = `translateX(${currentX}px) rotate(${rotate}deg)`;
+        };
+
+        card.onpointerup = () => {
+          if (!active) return;
+          active = false;
+          card.classList.remove("dragging");
+          if (currentX > 110) {
+            likeMenu();
+          } else if (currentX < -110) {
+            skipMenu();
+          } else {
+            card.style.transform = "";
+            card.classList.add("shake");
+            setTimeout(() => card.classList.remove("shake"), 380);
+          }
+          currentX = 0;
+        };
+      }
+
+      document.addEventListener("click", (event) => {
+        const target = event.target.closest("button");
+        if (!target) return;
+
+        if (target.dataset.go) show(target.dataset.go);
+        if (target.dataset.start !== undefined) startRound();
+        if (target.dataset.reset !== undefined) startRound();
+        if (target.dataset.mode) {
+          state.mode = target.dataset.mode;
+          renderModes();
+        }
+        if (target.dataset.skip !== undefined) skipMenu();
+        if (target.dataset.like !== undefined) likeMenu();
+        if (target.dataset.winner) chooseWinner(menus.find((menu) => menu.id === target.dataset.winner));
+        if (target.id === "randomWinner") chooseWinner(state.selected[Math.floor(Math.random() * state.selected.length)]);
+        if (target.dataset.favorite) toggleFavorite(target.dataset.favorite);
+      });
+
+      renderModes();
+    </script>
+  </body>
+</html>
