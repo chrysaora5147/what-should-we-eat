@@ -233,6 +233,10 @@
         display: none;
       }
 
+      .food-art.has-image .image-fallback {
+        opacity: 0;
+      }
+
       .food-image {
         position: absolute;
         inset: 0;
@@ -971,7 +975,8 @@
         if (menu.image) {
           return `
             <div class="food-art has-image" style="background: linear-gradient(135deg,${menu.gradient});">
-              <img class="food-image" src="${menu.image}" alt="${menu.name}" loading="${priority ? "eager" : "lazy"}" decoding="async" fetchpriority="${priority ? "high" : "auto"}">
+              <span class="food-emoji image-fallback">${menu.emoji}</span>
+              <img class="food-image" src="${menu.image}" alt="${menu.name}" loading="${priority ? "eager" : "lazy"}" decoding="async" fetchpriority="${priority ? "high" : "auto"}" onerror="this.remove(); this.closest('.food-art').classList.remove('has-image');">
             </div>
           `;
         }
@@ -1095,7 +1100,7 @@
         const menu = state.winner;
         const isFavorite = state.favorites.some((item) => item.id === menu.id);
         $("#resultCard").innerHTML = `
-          ${menuMedia(menu)}
+          ${menuMedia(menu, true)}
           <div class="result-copy">
             <p class="muted">วันนี้กิน</p>
             <h2>${menu.name}</h2>
