@@ -915,6 +915,8 @@
         history: JSON.parse(localStorage.getItem("kinrai:history") || "[]")
       };
 
+      const preloadedImages = new Set();
+
       const $ = (selector) => document.querySelector(selector);
       const $$ = (selector) => [...document.querySelectorAll(selector)];
 
@@ -924,6 +926,18 @@
 
       function visibleMenus() {
         return state.mode === "all" ? menus : menus.filter((menu) => menu.category === state.mode);
+      }
+
+      function preloadMenuImage(menu) {
+        if (!menu || !menu.image || preloadedImages.has(menu.image)) return;
+        const image = new Image();
+        image.decoding = "async";
+        image.src = menu.image;
+        preloadedImages.add(menu.image);
+      }
+
+      function preloadUpcomingImages(startIndex = state.index) {
+        state.deck.slice(startIndex, startIndex + 12).forEach(preloadMenuImage);
       }
 
       function show(screenId) {
@@ -938,6 +952,7 @@
         state.index = 0;
         state.selected = [];
         state.winner = null;
+        preloadUpcomingImages(0);
         show("swipe");
         renderSwipe();
       }
@@ -952,11 +967,11 @@
         `).join("");
       }
 
-      function menuMedia(menu) {
+      function menuMedia(menu, priority = false) {
         if (menu.image) {
           return `
             <div class="food-art has-image" style="background: linear-gradient(135deg,${menu.gradient});">
-              <img class="food-image" src="${menu.image}" alt="${menu.name}" loading="lazy">
+              <img class="food-image" src="${menu.image}" alt="${menu.name}" loading="${priority ? "eager" : "lazy"}" decoding="async" fetchpriority="${priority ? "high" : "auto"}">
             </div>
           `;
         }
@@ -976,9 +991,9 @@
         return `<span class="thumb" style="background: linear-gradient(135deg,${menu.gradient});">${menu.emoji}</span>`;
       }
 
-      function menuCard(menu) {
+      function menuCard(menu, priority = false) {
         return `
-          ${menuMedia(menu)}
+          ${menuMedia(menu, priority)}
           <div class="card-body">
             <div class="card-title">
               <h3>${menu.name}</h3>
@@ -1014,10 +1029,12 @@
         }
 
         const menu = state.deck[state.index];
+        preloadMenuImage(menu);
+        preloadUpcomingImages(state.index + 1);
         card.style.transform = "";
         card.classList.remove("dragging");
         card.innerHTML = `
-          ${menuCard(menu)}
+          ${menuCard(menu, true)}
           <div class="card-actions">
             <button class="btn" data-skip>← ไม่ใช่วันนี้</button>
             <button class="btn good" data-like>เข้ารอบ! →</button>
