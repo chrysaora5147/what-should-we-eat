@@ -591,7 +591,14 @@
         }
 
         .result-card {
+          display: block;
           gap: 0;
+        }
+
+        .result-card .food-art {
+          width: 100%;
+          min-height: clamp(240px, 58vw, 340px);
+          aspect-ratio: 16 / 11;
         }
 
         .mode-grid,
@@ -725,8 +732,12 @@
         }
 
         .result-card .food-art {
-          min-height: 0;
-          aspect-ratio: 1 / 1;
+          min-height: clamp(230px, 62vw, 310px);
+          aspect-ratio: 16 / 11;
+        }
+
+        .result-card .food-image {
+          padding: 10px;
         }
 
         .result-copy {
